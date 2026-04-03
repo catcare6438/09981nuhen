@@ -1,35 +1,175 @@
-<div class="photo-box" id="pb-before-water">
-            <input type="file" accept="image/*" onchange="loadPhoto(this,'before-water')">
-            <div class="photo-icon">📷</div>
-            <div class="photo-label">飲水/設備<br>更換前</div>
-            <div class="overlay" style="color:#fff;font-size:.7rem;">更換照片</div>
-          </div>
-          <div class="photo-box" id="pb-after-water">
-            <input type="file" accept="image/*" onchange="loadPhoto(this,'after-water')">
-            <div class="photo-icon">✅</div>
-            <div class="photo-label">飲水/設備<br>更換後</div>
-            <div class="overlay" style="color:#fff;font-size:.7rem;">更換照片</div>
-          </div>
-        </div>
-      </div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>貓窩裏🎉 保母專區</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF5F8;--bg2:#FFF0F4;--bg3:#FFE8EF;
+  --card:#FFFFFF;--card2:#FFF8FA;
+  --border:#FFD6E0;--border2:#FFB6C1;
+  --g1:#FF8FA3;--g2:#FF6B8A;--g3:#FFD6E0;
+  --p1:#FF8FA3;--p2:#FFB6C1;
+  --y:#FFB800;--r:#F87171;--o:#FB923C;--b:#C084FC;
+  --t:#3D2B35;--tl:#8B687A;--tm:#6B4558;
+  --sh:0 4px 20px rgba(255,143,163,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;}
 
-      <div class="photo-section">
-        <div style="font-size:.76rem;font-weight:700;color:var(--tl);margin-bottom:8px;">🐱 寵物萌照 / 互動影片</div>
-        <div class="photo-row" id="petPhotoRow">
-          <div class="photo-box">
-            <input type="file" accept="image/*" onchange="addPetPhoto(this)">
-            <div class="photo-icon">📸</div>
-            <div class="photo-label">新增萌照</div>
-          </div>
+/* ── LOGIN ── */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#FFD0DF 0%,#FFF5F8 55%,#FFE8EF 100%);}
+.lbox{background:#fff;border:2.5px solid var(--border);border-radius:24px;
+  padding:40px 32px;width:360px;max-width:94vw;text-align:center;
+  box-shadow:0 16px 48px rgba(255,143,163,.22);position:relative;overflow:hidden;}
+.lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--p1),var(--p2),#FFE066,var(--p1));}
+.l-ico{font-size:3rem;margin-bottom:12px;}
+.l-title{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:var(--p1);margin-bottom:4px;text-shadow:2px 2px 0 #fff;}
+.l-sub{font-size:.8rem;color:var(--tl);margin-bottom:24px;}
+.l-sel,.l-in{
+  width:100%;padding:12px 14px;background:#FFFAFB;border:2px solid var(--border);
+  border-radius:10px;color:var(--t);font-family:inherit;font-size:.92rem;
+  outline:none;transition:border .2s;margin-bottom:10px;
+}
+.l-in{letter-spacing:4px;text-align:center;}
+.l-sel:focus,.l-in:focus{border-color:var(--p1);}
+.l-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--p1),var(--g2));
+  color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:900;
+  font-family:'Nunito',sans-serif;cursor:pointer;transition:all .2s;}
+.l-btn:hover{opacity:.9;transform:translateY(-1px);}
+.l-err{color:var(--r);font-size:.78rem;margin-top:8px;display:none;}
+
+/* ── MAIN LAYOUT ── */
+#mainScreen{display:none;}
+.topbar{background:rgba(255,255,255,.97);backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--border);padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(255,143,163,.14);}
+.top-l{display:flex;align-items:center;gap:10px;}
+.top-av{font-size:1.8rem;}
+.top-nm{font-family:'Nunito',sans-serif;font-weight:900;color:var(--p1);font-size:.95rem;}
+.top-role{font-size:.68rem;color:var(--tl);}
+.btn{padding:7px 14px;border-radius:10px;border:none;cursor:pointer;
+  font-size:.78rem;font-weight:700;font-family:'Nunito',sans-serif;transition:all .2s;}
+.btn-ghost{background:var(--bg3);border:1.5px solid var(--border2);color:var(--tl);}
+
+/* TABS */
+.tabs{background:var(--card2);border-bottom:2px solid var(--border);
+  display:flex;gap:4px;padding:10px 16px;overflow-x:auto;}
+.tab{padding:8px 16px;border-radius:10px;cursor:pointer;font-size:.8rem;
+  font-weight:700;color:var(--tl);transition:all .2s;white-space:nowrap;}
+.tab.on{background:linear-gradient(135deg,rgba(255,143,163,.18),rgba(255,182,193,.12));color:var(--p1);border:1.5px solid var(--p2);}
+
+/* CONTENT */
+.wrap{max-width:880px;margin:0 auto;padding:20px 14px;}
+
+/* REPORT MODAL (修復您照片中破版的部分) */
+.m-ov{display:none;position:fixed;inset:0;background:rgba(200,100,130,.3);z-index:999;
+  align-items:flex-start;justify-content:center;backdrop-filter:blur(4px);
+  overflow-y:auto;padding:10px 0 20px;}
+.m-ov.show{display:flex;}
+.m-box{background:var(--card);border:2px solid var(--border2);border-radius:18px;
+  padding:22px 18px;width:700px;max-width:98vw;margin:auto;}
+.m-box h3{font-family:'Nunito',sans-serif;font-weight:900;color:var(--p1);margin-bottom:16px;}
+
+.sec{margin-bottom:20px;background:rgba(255,240,245,.6);border-radius:14px;padding:16px;}
+.sec-title{font-size:.82rem;font-weight:800;color:var(--p1);margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid var(--border);}
+
+.photo-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:8px;}
+.photo-box{
+  aspect-ratio:1;border:2px dashed var(--border2);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;background:var(--bg2);position:relative;overflow:hidden;
+  font-size:.7rem;color:var(--tl);
+}
+.photo-box img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.photo-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+.submit-btn{
+  width:100%;padding:14px;background:linear-gradient(135deg,var(--p1),var(--g2));
+  color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:900;cursor:pointer;
+}
+.close-btn{
+  width:100%;padding:11px;background:var(--bg3);color:var(--tl);
+  border:1.5px solid var(--border2);border-radius:10px;margin-top:8px;cursor:pointer;
+}
+textarea{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;outline:none;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="lbox">
+    <div class="l-ico">🐾</div>
+    <div class="l-title">保母專區</div>
+    <div class="l-sub">貓窩裏 到府寵物褓姆</div>
+    <select class="l-sel" id="sitterSel">
+      <option value="">— 選擇您的名字 —</option>
+      <option value="Ying">🦊 Ying</option>
+      <option value="小汶">🐰 小汶</option>
+      <option value="菓菓">🦔 菓菓</option>
+      <option value="小茹">🐿️ 小茹</option>
+      <option value="阿瑛">🐶 阿瑛</option>
+    </select>
+    <input class="l-in" type="password" id="sitterPw" placeholder="個人密碼" onkeydown="if(event.key==='Enter')login()">
+    <button class="l-btn" onclick="login()">登入保母專區 →</button>
+    <div class="l-err" id="loginErr">名字或密碼錯誤 🐈️</div>
+  </div>
+</div>
+
+<div id="mainScreen">
+  <div class="topbar">
+    <div class="top-l">
+      <div class="top-av" id="topAv"></div>
+      <div><div class="top-nm" id="topNm"></div><div class="top-role" id="topRole"></div></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <a href="index.html" class="btn btn-ghost">← 前台</a>
+      <button class="btn btn-ghost" onclick="logout()">登出</button>
+    </div>
+  </div>
+  
+  <div class="tabs">
+    <div class="tab on">📋 我的案件</div>
+    <div class="tab">💰 薪資查詢</div>
+    <div class="tab">📝 回報紀錄</div>
+  </div>
+
+  <div class="wrap">
+    <div class="sec">
+      <p style="text-align:center; padding:20px;">歡迎回來！請選擇功能進行操作。</p>
+      <button class="submit-btn" onclick="openReport()">📝 開啟範例回報單 (測試用)</button>
+    </div>
+  </div>
+</div>
+
+<div class="m-ov" id="reportMod">
+  <div class="m-box">
+    <h3>📝 照護回報</h3>
+    <div class="sec">
+      <div class="sec-title">📸 清潔前後對比</div>
+      <div class="photo-row">
+        <div class="photo-box">
+          <input type="file" accept="image/*" onchange="loadPhoto(this)">
+          <span class="photo-icon">📷</span>
+          <span class="photo-label">貓砂/清潔前</span>
+        </div>
+        <div class="photo-box">
+          <input type="file" accept="image/*" onchange="loadPhoto(this)">
+          <span class="photo-icon">✅</span>
+          <span class="photo-label">貓砂/清潔後</span>
         </div>
       </div>
     </div>
 
     <div class="sec">
       <div class="sec-title">📝 其他補充備註</div>
-      <div class="field">
-        <textarea id="rNote" rows="3" placeholder="例如：今日環境整潔狀況、鑰匙歸還位置、或特別想對飼主說的話..."></textarea>
-      </div>
+      <textarea id="rNote" rows="3" placeholder="例如：今日環境整潔狀況..."></textarea>
     </div>
 
     <button class="submit-btn" onclick="submitReport()">🐾 完成並送出回報 🐾</button>
@@ -38,7 +178,6 @@
 </div>
 
 <script>
-// --- 核心變數 ---
 const sitters = {
   "Ying": { pw: "715715", av: "🦊" },
   "小汶": { pw: "715715", av: "🐰" },
@@ -47,48 +186,28 @@ const sitters = {
   "阿瑛": { pw: "715715", av: "🐶" }
 };
 
-let curSitter = "";
-
-// --- 登入邏輯 ---
 function login() {
   const name = document.getElementById('sitterSel').value;
   const pw = document.getElementById('sitterPw').value;
   const err = document.getElementById('loginErr');
 
   if (name && sitters[name] && pw === sitters[name].pw) {
-    curSitter = name;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('mainScreen').style.display = 'block';
     document.getElementById('topAv').innerText = sitters[name].av;
     document.getElementById('topNm').innerText = name;
     document.getElementById('topRole').innerText = "專業到府保母";
     err.style.display = 'none';
-    // 這裡可以加入讀取案件的 function
   } else {
     err.style.display = 'block';
   }
 }
 
-function logout() {
-  location.reload();
-}
+function logout() { location.reload(); }
+function openReport() { document.getElementById('reportMod').classList.add('show'); }
+function closeMod() { document.getElementById('reportMod').classList.remove('show'); }
 
-// --- 頁籤切換 ---
-function sw(tabId, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  document.getElementById('tab-cases').style.display = tabId === 'cases' ? 'block' : 'none';
-  document.getElementById('tab-salary').style.display = tabId === 'salary' ? 'block' : 'none';
-  document.getElementById('tab-history').style.display = tabId === 'history' ? 'block' : 'none';
-}
-
-// --- 彈窗控制 ---
-function closeMod() {
-  document.getElementById('reportMod').classList.remove('show');
-}
-
-// --- 照片處理 (範例) ---
-function loadPhoto(input, type) {
+function loadPhoto(input) {
   const box = input.parentElement;
   if (input.files && input.files[0]) {
     const reader = new FileReader();
@@ -99,22 +218,15 @@ function loadPhoto(input, type) {
         box.appendChild(img);
       }
       img.src = e.target.result;
-      box.classList.add('has-img');
+      box.querySelector('.photo-icon').style.display = 'none';
+      box.querySelector('.photo-label').style.display = 'none';
     };
     reader.readAsDataURL(input.files[0]);
   }
 }
 
-function addPetPhoto(input) {
-  if (input.files && input.files[0]) {
-    // 實作邏輯：新增一個預覽框並把目前選取的圖放進去
-    loadPhoto(input, 'pet');
-  }
-}
-
-// --- 送出回報 (範例) ---
 function submitReport() {
-  alert("回報已送出！(此為測試訊息，實際需串接資料庫)");
+  alert("回報功能測試成功！");
   closeMod();
 }
 </script>
