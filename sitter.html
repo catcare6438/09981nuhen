@@ -3,70 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>貓窩裏🐾 專業工作站</title>
+    <title>貓窩裏🐾 寵愛旗艦工作站</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        :root{--p1:#FF8FA3;--bg:#FFF5F8;--border:#FFD6E0;--t:#3D2B35;}
+        :root{--p1:#FF8FA3;--p2:#FFB6C1;--bg:#FFF5F8;--border:#FFD6E0;--t:#3D2B35;--tl:#8B687A;}
         *{box-sizing:border-box;margin:0;padding:0;}
         body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--t);padding-bottom:100px;}
         .nav{background:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--border);position:sticky;top:0;z-index:100;}
         .tabs{display:flex;background:#FFE8EF;padding:5px;margin:15px;border-radius:20px;gap:5px;}
-        .tab{flex:1;text-align:center;padding:12px;font-weight:bold;cursor:pointer;border-radius:15px;color:#8B687A;font-size:0.85rem;}
+        .tab{flex:1;text-align:center;padding:12px;font-weight:bold;cursor:pointer;border-radius:15px;color:var(--tl);font-size:0.85rem;}
         .tab.active{background:var(--p1);color:white;box-shadow:0 4px 10px rgba(255,143,163,0.3);}
         .container{padding:0 15px;}
         .card{background:#fff;border:2px solid var(--border);border-radius:22px;padding:20px;margin-bottom:15px;box-shadow:0 6px 15px rgba(0,0,0,0.02);position:relative;}
-        .btn-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--p1),#FF6B8A);color:white;border:none;border-radius:15px;font-weight:900;cursor:pointer;font-size:1rem;}
+        .btn-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--p1),#FF6B8A);color:white;border:none;border-radius:15px;font-weight:900;cursor:pointer;font-size:1.1rem;box-shadow:0 5px 15px rgba(255,143,163,0.4);}
+        
         .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px);}
-        .m-box{background:#fff;width:100%;max-width:600px;border-radius:30px 30px 0 0;padding:25px;max-height:92vh;overflow-y:auto;}
-        .sec{margin-bottom:12px;padding:15px;background:var(--bg);border-radius:20px;border:1px dashed var(--border);}
-        select, input, textarea { width:100%; padding:12px; border-radius:12px; border:1.5px solid var(--border); margin-top:5px; font-size:1rem;}
-        #exportOverlay{display:none; position:fixed; inset:0; background:white; z-index:300; padding:30px; overflow-y:auto;}
+        .m-box{background:#fff;width:100%;max-width:600px;border-radius:30px 30px 0 0;padding:25px;max-height:95vh;overflow-y:auto;}
+        .sec{margin-bottom:15px;padding:18px;background:var(--bg);border-radius:25px;border:1.5px dashed var(--border);}
+        .sec-h{font-weight:900;color:var(--p1);margin-bottom:12px;display:block;font-size:1rem;letter-spacing:1px;}
+        
+        label{display:block;font-size:0.85rem;margin:10px 0 5px;font-weight:700;color:var(--tl);}
+        select, input, textarea { width:100%; padding:12px; border-radius:15px; border:2px solid var(--border); background:#fff; font-size:1rem; outline:none; transition:0.3s;}
+        select:focus, input:focus{border-color:var(--p1);}
+        
+        .check-grid{display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;}
+        .check-btn{background:#fff; padding:10px; border-radius:12px; border:1.5px solid var(--border); font-size:0.85rem; display:flex; align-items:center; gap:8px; cursor:pointer;}
+        .check-btn input{width:18px; height:18px; accent-color:var(--p1);}
+        
+        #exportOverlay{display:none; position:fixed; inset:0; background:white; z-index:300; padding:20px; overflow-y:auto;}
+        .copy-box{background:#fdfdfd; padding:25px; border-radius:20px; border:2px solid var(--p1); line-height:1.8; font-size:0.95rem; color:#444; position:relative;}
     </style>
 </head>
 <body>
 
-<div id="loginScreen" style="min-height:100vh; display:flex; align-items:center; justify-content:center;">
-    <div style="background:#fff; padding:40px; border-radius:30px; border:3px solid var(--border); text-align:center; width:340px;">
-        <h2 style="color:var(--p1); margin-bottom:20px;">貓窩裏🐾 系統登入</h2>
-        <select id="sitterSel" style="margin-bottom:15px;">
+<div id="loginScreen" style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #FFDDE1 0%, #EE9CA7 100%);">
+    <div style="background:rgba(255,255,255,0.95); padding:40px; border-radius:35px; text-align:center; width:340px; box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+        <h2 style="color:var(--p1); font-weight:900; font-size:1.5rem; margin-bottom:25px;">貓窩裏🐾 專業工作站</h2>
+        <select id="sitterSel" style="margin-bottom:15px; border-radius:20px;">
             <option value="Ying">🦊 Ying</option><option value="小汶">🐰 小汶</option>
             <option value="菓菓">🦔 菓菓</option><option value="小茹">🐿️ 小茹</option><option value="阿瑛">🐶 阿瑛</option>
         </select>
-        <input type="password" id="pwIn" placeholder="通關密碼 (715715)">
-        <button class="btn-main" style="margin-top:20px;" onclick="doLogin()">連線並進入 🚀</button>
-        <p id="debugInfo" style="font-size:0.7rem; color:red; margin-top:10px;"></p>
+        <input type="password" id="pwIn" placeholder="請輸入密碼" style="border-radius:20px;">
+        <button class="btn-main" style="margin-top:25px; width:100%;" onclick="doLogin()">開啟今日照護 ✨</button>
     </div>
 </div>
 
 <div id="mainScreen" style="display:none;">
-    <div class="nav"><b id="who" style="color:var(--p1);"></b><button onclick="location.reload()" style="background:none; border:none; color:#999;">登出</button></div>
+    <div class="nav"><b id="who" style="color:var(--p1); font-size:1.1rem;"></b><button onclick="location.reload()" style="background:none; border:none; color:#bbb; font-weight:bold;">安全登出</button></div>
     <div class="tabs">
-        <div class="tab active" onclick="switchTab(1, this)">📋 任務</div>
-        <div class="tab" onclick="switchTab(2, this)">📝 紀錄</div>
-        <div class="tab" onclick="switchTab(3, this)">💰 薪資</div>
+        <div class="tab active" onclick="switchTab(1, this)">📋 今日任務</div>
+        <div class="tab" onclick="switchTab(2, this)">📝 照護紀錄</div>
+        <div class="tab" onclick="switchTab(3, this)">🧧 薪資結算</div>
     </div>
     <div class="container" id="viewArea"></div>
 </div>
 
 <div class="modal" id="reportModal">
     <div class="m-box">
-        <h3 style="text-align:center; color:var(--p1); margin-bottom:15px;">🐾 專業照護回報</h3>
-        <div class="sec">🌡️ 溫度：<input type="number" id="f_temp" value="26" style="width:80px;"> °C</div>
-        <div class="sec">🍽️ 食慾：<select id="f_food"><option>食慾極佳，全部吃光</option><option>食慾一般，剩下一點</option><option>沒什麼胃口</option></select></div>
-        <div class="sec">💩 排泄：<select id="f_poo"><option>排泄狀況非常漂亮</option><option>有點軟便</option><option>未觀察到便便</option></select></div>
-        <div class="sec">💕 心情：<select id="f_mood"><option>心情超好，熱情撒嬌</option><option>自在放鬆，懶洋洋</option><option>有點害羞躲藏</option></select></div>
-        <div class="sec">📦 備品：<select id="f_items"><option>充足</option><option>需補充</option></select></div>
-        <div class="sec">✍️ 備註：<textarea id="f_note" rows="3" placeholder="寶貝今天很乖..."></textarea></div>
-        <button class="btn-main" id="subBtn" onclick="submitToCloud()">同步雲端 💌</button>
-        <button onclick="closeModal()" style="width:100%; border:none; background:none; margin-top:10px; color:#999;">取消</button>
+        <h3 style="text-align:center; color:var(--p1); font-weight:900; margin-bottom:20px;">🐾 專業照護紀錄單</h3>
+        
+        <div class="sec">
+            <span class="sec-h">🧤 到府安心 SOP</span>
+            <div class="check-grid">
+                <label class="check-btn"><input type="checkbox" class="sop" value="全身酒精消毒、更換乾淨襪子" checked> 消毒更衣</label>
+                <label class="check-btn"><input type="checkbox" class="sop" value="巡視全屋門窗安全、門鎖確認" checked> 門窗巡視</label>
+                <label class="check-btn"><input type="checkbox" class="sop" value="檢查攝影機連線與瓦斯開關" checked> 電氣安全</label>
+                <label class="check-btn"><input type="checkbox" class="sop" value="垃圾整理並帶離現場" checked> 垃圾帶走</label>
+            </div>
+            <label>目前室內溫度紀錄 (°C)</label>
+            <input type="number" id="f_temp" value="25">
+        </div>
+
+        <div class="sec">
+            <span class="sec-h">🍛 飲食與健康觀察</span>
+            <label>進食表現</label>
+            <select id="f_food">
+                <option value="食慾極佳，非常期待用餐，快速吃完掃盤">✨ 食慾極佳 (掃盤)</option>
+                <option value="食慾穩定，表現放鬆，有慢慢吃完">🙂 食慾穩定 (慢食)</option>
+                <option value="食慾普通，今日剩餘一點點">😐 剩餘一點點</option>
+                <option value="食慾不佳，似乎不太想吃">😰 幾乎沒吃</option>
+            </select>
+            <label>水份補充</label>
+            <select id="f_water"><option>已洗淨水盆並換新濾水</option><option>飲水量正常，已補滿</option><option>今日飲水較少</option></select>
+            <label>便便觀察</label>
+            <select id="f_poo">
+                <option value="形狀非常漂亮且成形，軟硬度適中健康">💩 完美成形 (極健康)</option>
+                <option value="水分較多，形狀偏軟">💩 稍軟</option>
+                <option value="較乾硬，呈小顆粒狀">💩 偏硬</option>
+                <option value="今日未觀察到排便">🚫 未觀察到</option>
+            </select>
+        </div>
+
+        <div class="sec">
+            <span class="sec-h">💕 貼心互動服務</span>
+            <div class="check-grid">
+                <label class="check-btn"><input type="checkbox" class="int" value="全身舒壓梳毛"> 舒壓梳毛</label>
+                <label class="check-btn"><input type="checkbox" class="int" value="逗貓棒互動遊戲"> 體力消耗</label>
+                <label class="check-btn"><input type="checkbox" class="int" value="眼周/耳朵基礎清潔"> 基礎清潔</label>
+                <label class="check-btn"><input type="checkbox" class="int" value="輕柔按摩/摸摸撒嬌"> 摸摸陪伴</label>
+            </div>
+            <label>寶貝今日心情</label>
+            <select id="f_mood">
+                <option value="心情非常燦爛，不斷主動蹭手討摸，表現極度信任">💖 熱情滿分</option>
+                <option value="情緒非常平穩自在，會跟在保姆身邊觀察">🌿 自在放鬆</option>
+                <option value="還在害羞觀察，但已經願意出來露面">🦋 害羞觀察</option>
+                <option value="精神看起來有點懶洋洋的">💤 懶洋洋</option>
+            </select>
+        </div>
+
+        <div class="sec">
+            <span class="sec-h">📝 保姆的叮嚀</span>
+            <textarea id="f_note" rows="3" placeholder="例如：咪咪今天玩得好瘋，一直在跳台跳來跳去..."></textarea>
+        </div>
+
+        <button class="btn-main" id="subBtn" onclick="submitToCloud()">同步雲端並生成日報 💌</button>
+        <button onclick="closeModal()" style="width:100%; border:none; background:none; margin-top:15px; color:#999; font-size:0.9rem;">返回修改</button>
     </div>
 </div>
 
 <div id="exportOverlay">
-    <h3 style="text-align:center; color:var(--p1);">💌 給家長的日報文字</h3>
-    <div id="exportTarget" style="background:#f9f9f9; padding:20px; border-radius:15px; margin:20px 0; white-space:pre-wrap; border:1px solid #eee; font-size:0.9rem;"></div>
-    <button class="btn-main" onclick="copyAndClose()">複製文字並關閉</button>
+    <div style="max-width:600px; margin:auto;">
+        <h3 style="text-align:center; color:var(--p1); font-weight:900;">💌 暖心照護日報</h3>
+        <p style="text-align:center; font-size:0.8rem; color:#888; margin-bottom:15px;">文字已格式化，適合直接貼在 Line 給家長</p>
+        <div class="copy-box" id="exportTarget"></div>
+        <button class="btn-main" style="margin-top:20px;" onclick="copyAndClose()">複製精細日報文字</button>
+    </div>
 </div>
 
 <script>
@@ -77,47 +139,36 @@ const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 let curSitter = "", activeClient = "", currentFee = 0;
 
 async function doLogin() {
-    const pw = document.getElementById('pwIn').value;
-    const debug = document.getElementById('debugInfo');
-    if(pw !== "715715") { alert("密碼錯誤"); return; }
-
-    debug.innerText = "正在嘗試與雲端連線...";
-    try {
-        // 測試是否能讀取資料表
-        const { error } = await supabaseClient.from('reports').select('*').limit(1);
-        if(error) throw error;
-
+    if(document.getElementById('pwIn').value === "715715") {
         curSitter = document.getElementById('sitterSel').value;
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('mainScreen').style.display = 'block';
-        document.getElementById('who').innerText = "📍 保母：" + curSitter;
+        document.getElementById('who').innerText = "📍 服務保母：" + curSitter;
         switchTab(1);
-    } catch (e) {
-        debug.innerText = "連線失敗：" + e.message + "\n請確認是否已執行 SQL 指令並開放權限。";
-    }
+    } else { alert("密碼錯誤唷！🐾"); }
 }
 
 async function switchTab(n, el) {
     if(el){ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');}
     const area = document.getElementById('viewArea');
-    area.innerHTML = "<p style='text-align:center; padding:30px;'>資料讀取中...</p>";
+    area.innerHTML = "<p style='text-align:center; padding:50px; color:#aaa;'>雲端同步中...</p>";
     
     if(n===1) {
         area.innerHTML = `
-            <div class="card"><h3>陳小姐 (咪咪)</h3><button class="btn-main" onclick="openModal('陳小姐', 450)">開始回報</button></div>
-            <div class="card"><h3>王先生 (小黑)</h3><button class="btn-main" onclick="openModal('王先生', 550)">開始回報</button></div>`;
+            <div class="card"><h3>🏠 陳小姐 (咪咪)</h3><button class="btn-main" style="margin-top:10px;" onclick="openModal('陳小姐', 450)">開始暖心回報</button></div>
+            <div class="card"><h3>🏠 王先生 (小黑)</h3><button class="btn-main" onclick="openModal('王先生', 550)">開始暖心回報</button></div>`;
     } else if(n===2) {
         const { data } = await supabaseClient.from('reports').select('*').eq('sitter_name', curSitter).order('created_at', {ascending: false});
-        area.innerHTML = data.map(r => `
+        area.innerHTML = data && data.length ? data.map(r => `
             <div class="card">
-                <button onclick='exportToOwner(${JSON.stringify(r)})' style="position:absolute; top:15px; right:15px; border:1px solid var(--p1); color:var(--p1); background:none; padding:4px 8px; border-radius:8px; font-size:0.7rem;">一鍵導出 📤</button>
-                <b>${r.client_name}</b><br><small>${new Date(r.created_at).toLocaleString()}</small>
+                <button onclick='exportToOwner(${JSON.stringify(r)})' style="position:absolute; top:15px; right:15px; border:1.5px solid var(--p1); color:var(--p1); background:none; padding:5px 12px; border-radius:12px; font-size:0.75rem; font-weight:bold;">導出日報 📤</button>
+                <b>${r.client_name} 家</b><br><small style="color:#bbb;">服務時間：${new Date(r.created_at).toLocaleString()}</small>
             </div>
-        `).join('');
+        `).join('') : "<p style='text-align:center; padding:50px; color:#999;'>尚無歷史紀錄</p>";
     } else {
         const { data } = await supabaseClient.from('reports').select('fee').eq('sitter_name', curSitter);
         const total = data ? data.reduce((s, r) => s + (Number(r.fee)||0), 0) : 0;
-        area.innerHTML = `<div class="card" style="text-align:center; padding:40px;"><h3>本期薪資</h3><h1 style="color:var(--p1); font-size:3rem;">$${total}</h1></div>`;
+        area.innerHTML = `<div class="card" style="text-align:center; padding:60px 20px;"><h3>本期累積薪資</h3><h1 style="color:var(--p1); font-size:3.5rem; font-weight:900;">$${total}</h1><p style="color:#ccc;">辛苦了，繼續加油！✨</p></div>`;
     }
 }
 
@@ -125,28 +176,58 @@ function openModal(client, fee) { activeClient = client; currentFee = fee; docum
 function closeModal() { document.getElementById('reportModal').style.display = 'none'; }
 
 async function submitToCloud() {
-    const btn = document.getElementById('subBtn'); btn.innerText = "同步中..."; btn.disabled = true;
+    const btn = document.getElementById('subBtn'); btn.innerText = "寫入雲端..."; btn.disabled = true;
+    
+    const sops = Array.from(document.querySelectorAll('.sop:checked')).map(i => i.value).join('、');
+    const ints = Array.from(document.querySelectorAll('.int:checked')).map(i => i.value).join('、');
+    
     const row = {
         sitter_name: curSitter, client_name: activeClient, fee: currentFee,
-        temp: document.getElementById('f_temp').value, food_status: document.getElementById('f_food').value,
-        poo: document.getElementById('f_poo').value, mood: document.getElementById('f_mood').value,
-        items: document.getElementById('f_items').value, note: document.getElementById('f_note').value
+        temp: document.getElementById('f_temp').value,
+        food_status: document.getElementById('f_food').value,
+        poo: document.getElementById('f_poo').value,
+        mood: document.getElementById('f_mood').value,
+        items: "【SOP已完成】" + sops,
+        note: `【互動紀錄】${ints || '靜靜陪伴'}\n【飲水觀察】${document.getElementById('f_water').value}\n【詳細心得】${document.getElementById('f_note').value || '今日一切安好'}`
     };
+
     const { error } = await supabaseClient.from('reports').insert([row]);
     if(error) alert("存檔失敗：" + error.message);
-    else { alert("🎉 雲端存檔成功！"); closeModal(); switchTab(2); }
-    btn.innerText = "同步雲端 💌"; btn.disabled = false;
+    else { alert("🎉 雲端備份成功！"); closeModal(); switchTab(2); }
+    btn.innerText = "同步雲端並生成日報 💌"; btn.disabled = false;
 }
 
 function exportToOwner(r) {
-    const msg = `🐾 【貓窩裏】專業照護回報 🐾\n\n家長您好，今日由 ${r.sitter_name} 為寶貝服務：\n\n🌡️ 溫度：${r.temp}°C\n🍱 飲食：${r.food_status}\n💩 排泄：${r.poo}\n💕 心情：${r.mood}\n📦 備品：${r.items}\n📝 備註：${r.note || '寶貝今天很乖，一切正常唷！'}\n\n服務時間：${new Date(r.created_at).toLocaleString()}\n給寶貝最溫暖的陪伴 ❤️`;
+    const msg = `🐾 【貓窩裏】專業到府照護回報 🐾
+
+親愛的 ${r.client_name} 家長您好：
+今日由保母 ${r.sitter_name} 為寶貝提供照護服務。我們秉持最細心的標準，已完成所有安全流程：
+
+🌡️ 環境監測：室內溫度 ${r.temp}°C (通風良好)
+✅ 安全防護：${r.items}
+
+✨ 【寶貝今日狀態紀錄】
+🔸 進食表現：${r.food_status}
+🔸 飲水紀錄：${r.note.split('\n')[1].replace('【飲水觀察】','')}
+🔸 排泄狀況：${r.poo}
+🔸 精神心情：${r.mood}
+
+🧸 【溫馨互動與美容】
+${r.note.split('\n')[0].replace('【互動紀錄】','')}
+
+💌 【保母的心情日記】
+${r.note.split('\n')[2].replace('【詳細心得】','')}
+
+服務時間：${new Date(r.created_at).toLocaleString()}
+貓窩裏，給寶貝最溫暖、最細心的陪伴 ❤️`;
+
     document.getElementById('exportTarget').innerText = msg;
     document.getElementById('exportOverlay').style.display = 'block';
 }
 
 function copyAndClose() {
     navigator.clipboard.writeText(document.getElementById('exportTarget').innerText);
-    alert("已複製文字！快去 Line 貼給家長吧～");
+    alert("精細版日報已複製！快去傳給家長吧～");
     document.getElementById('exportOverlay').style.display = 'none';
 }
 </script>
