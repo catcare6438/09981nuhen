@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>貓窩裏🐾 醫護級照護工作站</title>
+    <title>貓窩裏🐾 專業財務管理站</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -16,32 +16,38 @@
         .tab.active{background:var(--p1);color:white;box-shadow:0 4px 10px rgba(255,143,163,0.3);}
         .container{padding:0 15px;}
         .card{background:#fff;border:2px solid var(--border);border-radius:22px;padding:20px;margin-bottom:15px;box-shadow:0 6px 15px rgba(0,0,0,0.02);}
-        .btn-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--p1),#FF6B8A);color:white;border:none;border-radius:15px;font-weight:900;cursor:pointer;font-size:1.1rem;box-shadow:0 5px 15px rgba(255,143,163,0.4);}
+        
+        /* 薪資明細表格 */
+        .fee-table {width:100%; border-collapse: collapse; margin-top:10px; font-size:0.85rem;}
+        .fee-table th {text-align:left; color:var(--tl); border-bottom:2px solid var(--border); padding:8px 4px;}
+        .fee-table td {padding:12px 4px; border-bottom:1px solid #eee;}
+        .fee-total-box {background:linear-gradient(135deg, var(--p1), #FF6B8A); color:white; padding:25px; border-radius:25px; text-align:center; margin-bottom:20px;}
+        
+        .btn-main{width:100%;padding:14px;background:linear-gradient(135deg,var(--p1),#FF6B8A);color:white;border:none;border-radius:15px;font-weight:900;cursor:pointer;font-size:1.1rem;}
+        .btn-outline{width:100%;padding:12px;background:#fff;color:var(--p1);border:2px solid var(--p1);border-radius:15px;font-weight:700;cursor:pointer;margin-top:10px;}
         
         .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px);}
         .m-box{background:#fff;width:100%;max-width:600px;border-radius:30px 30px 0 0;padding:25px;max-height:95vh;overflow-y:auto;}
         .sec{margin-bottom:15px;padding:18px;background:var(--bg);border-radius:25px;border:1.5px dashed var(--border);}
-        .sec-h{font-weight:900;color:var(--p1);margin-bottom:12px;display:block;font-size:1rem;letter-spacing:1px;border-left:4px solid var(--p1);padding-left:10px;}
+        .sec-h{font-weight:900;color:var(--p1);margin-bottom:12px;display:block;font-size:1rem;border-left:4px solid var(--p1);padding-left:10px;}
         
-        label{display:block;font-size:0.8rem;margin:10px 0 3px;font-weight:700;color:var(--tl);}
-        select, input, textarea { width:100%; padding:10px; border-radius:12px; border:1.5px solid var(--border); background:#fff; font-size:0.9rem; outline:none;}
-        
+        select, input, textarea { width:100%; padding:10px; border-radius:12px; border:1.5px solid var(--border); background:#fff; font-size:0.9rem;}
         .check-grid{display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:5px;}
-        .check-btn{background:#fff; padding:8px; border-radius:10px; border:1px solid var(--border); font-size:0.75rem; display:flex; align-items:center; gap:5px; cursor:pointer;}
-        .check-btn input{width:16px; height:16px; accent-color:var(--p1);}
-        
-        #exportOverlay{display:none; position:fixed; inset:0; background:white; z-index:300; padding:20px; overflow-y:auto;}
-        .copy-box{background:#fdfdfd; padding:25px; border-radius:20px; border:2px solid var(--p1); line-height:1.7; font-size:0.9rem; color:#444;}
+        .check-btn{background:#fff; padding:8px; border-radius:10px; border:1px solid var(--border); font-size:0.75rem; display:flex; align-items:center; gap:5px;}
+
+        #exportOverlay{display:none; position:fixed; inset:0; background:rgba(255,245,248,0.98); z-index:300; padding:20px; overflow-y:auto; flex-direction:column; align-items:center;}
+        .export-card{background:white; width:100%; max-width:500px; padding:25px; border-radius:25px; border:2px solid var(--p1);}
+        .copy-box{background:#fdfdfd; padding:20px; border-radius:15px; border:1px solid #eee; line-height:1.7; font-size:0.85rem; color:#444; white-space:pre-wrap; margin-bottom:20px;}
     </style>
 </head>
 <body>
 
 <div id="loginScreen" style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:#FFDDE1;">
     <div style="background:white; padding:40px; border-radius:35px; text-align:center; width:340px;">
-        <h2 style="color:var(--p1); font-weight:900; margin-bottom:20px;">貓窩裏🐾 專業端</h2>
+        <h2 style="color:var(--p1); font-weight:900; margin-bottom:20px;">貓窩裏🐾 系統入口</h2>
         <select id="sitterSel" style="margin-bottom:10px;"><option value="Ying">🦊 Ying</option><option value="小汶">🐰 小汶</option><option value="菓菓">🦔 菓菓</option><option value="小茹">🐿️ 小茹</option><option value="阿瑛">🐶 阿瑛</option></select>
-        <input type="password" id="pwIn" placeholder="輸入密碼">
-        <button class="btn-main" style="margin-top:20px;" onclick="doLogin()">登入連線</button>
+        <input type="password" id="pwIn" placeholder="輸入密碼 (715715)">
+        <button class="btn-main" style="margin-top:20px;" onclick="doLogin()">進入系統</button>
     </div>
 </div>
 
@@ -57,99 +63,54 @@
 
 <div class="modal" id="reportModal">
     <div class="m-box">
-        <h3 style="text-align:center; color:var(--p1); font-weight:900; margin-bottom:20px;">🩺 醫護級詳細照護單</h3>
-        
+        <h3 style="text-align:center; color:var(--p1); font-weight:900; margin-bottom:20px;">🩺 醫護級照護回報</h3>
         <div class="sec">
-            <span class="sec-h">🔍 身體各項數值檢查</span>
+            <span class="sec-h">🔍 身體指標檢查 (10項)</span>
             <div class="check-grid">
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="眼睛(清澈無分泌物)" checked> 眼睛檢查</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="耳朵(乾淨無異味)" checked> 耳道檢查</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="口腔(牙齦粉紅、無口臭)" checked> 口腔觀察</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="鼻頭(微濕潤、呼吸順暢)" checked> 呼吸觀察</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="皮膚(無紅腫、無寄生蟲)" checked> 皮膚觸診</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="關節(行走有力、無歪斜)" checked> 步態觀察</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="指甲(長度適中、無斷裂)"> 指甲檢查</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="腹部(放鬆不緊繃、無硬塊)" checked> 腹部觸診</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="毛質(蓬鬆有光澤、無打結)" checked> 毛髮梳理</label>
-                <label class="check-btn"><input type="checkbox" class="bodycheck" value="精神(反應靈敏、眼神有神)" checked> 意識檢查</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="眼睛(無異常)" checked> 眼睛</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="耳朵(無異味)" checked> 耳朵</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="口腔(無口臭)" checked> 口腔</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="鼻頭(濕潤)" checked> 鼻頭</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="皮膚(無紅腫)" checked> 皮膚</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="步態(正常)" checked> 步態</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="指甲(正常)"> 指甲</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="腹部(放鬆)" checked> 腹部</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="毛質(蓬鬆)" checked> 毛質</label>
+                <label class="check-btn"><input type="checkbox" class="bodycheck" value="意識(靈敏)" checked> 意識</label>
             </div>
         </div>
-
         <div class="sec">
-            <span class="sec-h">🍛 進食與消化紀錄</span>
-            <label>進食細節描述</label>
+            <span class="sec-h">📊 狀態與情緒 (10項)</span>
+            <label>進食細節</label>
             <select id="f_food">
-                <option>食慾極佳：秒殺掃盤，積極求食</option>
-                <option>食慾穩定：環境放鬆，正常速度進食</option>
-                <option>進食較慢：分段進食，但有全部吃完</option>
-                <option>挑食表現：僅吃特定零食，主食剩餘</option>
-                <option>食慾普通：剩餘 1/4，觀察中</option>
-                <option>食慾偏差：剩餘 1/2，建議增加誘導</option>
-                <option>幾乎未進食：對食物反應冷淡</option>
-                <option>嗅聞後走開：完全不進食 (警訊)</option>
-                <option>食後嘔吐：進食後短時間內吐出</option>
-                <option>今日禁食：依家長指示進行斷食</option>
+                <option>食慾極佳：秒殺掃盤</option><option>食慾穩定：正常進食</option><option>進食較慢：分段吃完</option>
+                <option>挑食表現：剩餘主食</option><option>食慾普通：剩餘 1/4</option><option>食慾偏差：剩餘 1/2</option>
+                <option>幾乎未進食</option><option>嗅聞後走開</option><option>食後嘔吐</option><option>今日禁食</option>
             </select>
-            <label>便便型態 (Bristol Scale)</label>
+            <label>排泄觀察</label>
             <select id="f_poo">
-                <option>1. 極健康：成形且軟硬適中，不沾地板</option>
-                <option>2. 偏硬：小塊顆粒狀，水分較少</option>
-                <option>3. 輕微軟便：成形但觸感偏軟</option>
-                <option>4. 黏稠狀：未成形，呈膏狀</option>
-                <option>5. 水便：完全液體狀 (嚴重)</option>
-                <option>6. 顏色偏黑：可能含鐵質或需注意</option>
-                <option>7. 顏色偏淺：注意消化系統</option>
-                <option>8. 含有毛髮：換毛期正常現象</option>
-                <option>9. 含有異物：請家長留意誤食</option>
-                <option>10. 今日未排便：正常觀察中</option>
+                <option>1. 健康：成形適中</option><option>2. 偏硬顆粒</option><option>3. 輕微軟便</option>
+                <option>4. 黏稠狀</option><option>5. 水便</option><option>6. 顏色偏黑</option>
+                <option>7. 顏色偏淺</option><option>8. 含有毛髮</option><option>9. 含有異物</option><option>10. 未排便</option>
             </select>
-        </div>
-
-        <div class="sec">
-            <span class="sec-h">💕 情緒與行為層次</span>
+            <label>心情狀態</label>
             <select id="f_mood">
-                <option>熱情如火：主動討摸、呼嚕聲明顯</option>
-                <option>安定自在：在保姆身邊翻肚、伸懶腰</option>
-                <option>好奇心強：跟進跟出，觀察保姆動作</option>
-                <option>文靜乖巧：保持安全距離，眼神交流</option>
-                <option>調皮好動：瘋狂追逐玩耍，電力十足</option>
-                <option>懶洋洋：只想睡覺，互動意願較低</option>
-                <option>微感焦慮：持續喵喵叫，尋找家長</option>
-                <option>害羞躲藏：躲在被窩/角落，不敢靠近</option>
-                <option>警覺防禦：哈氣或低吼 (需耐心)</option>
-                <option>情緒反覆：一下討摸、一下跑開</option>
+                <option>熱情如火：主動討摸</option><option>安定自在：翻肚伸懶腰</option><option>好奇心強：跟進跟出</option>
+                <option>文靜乖巧：眼神交流</option><option>調皮好動：瘋狂玩耍</option><option>懶洋洋：只想睡覺</option>
+                <option>微感焦慮：持續喵叫</option><option>害羞躲藏：不敢靠近</option><option>警覺防禦：哈氣</option><option>情緒反覆</option>
             </select>
         </div>
-
-        <div class="sec">
-            <span class="sec-h">🔧 SOP 環境安全檢查</span>
-            <div class="check-grid">
-                <label class="check-btn"><input type="checkbox" class="sop" value="門窗全數鎖緊確認" checked> 門窗鎖緊</label>
-                <label class="check-btn"><input type="checkbox" class="sop" value="瓦斯水龍頭關閉確認" checked> 瓦斯關閉</label>
-                <label class="check-btn"><input type="checkbox" class="sop" value="環境異味/排泄物異味消除" checked> 異味消除</label>
-                <label class="check-btn"><input type="checkbox" class="sop" value="食碗/水盆每日刷洗消毒" checked> 碗盆洗滌</label>
-            </div>
-            <label>備品剩餘狀態</label>
-            <select id="f_items">
-                <option>充足：至少可維持一週以上</option>
-                <option>即將用完：主食剩餘 3 日份</option>
-                <option>即將用完：貓砂剩餘 1 包</option>
-                <option>即將用完：罐頭剩餘 2 罐</option>
-                <option>建議補貨：零食/藥品已空</option>
-                <option>建議補貨：乾淨飲水濾芯需換</option>
-            </select>
-        </div>
-
-        <button class="btn-main" id="subBtn" onclick="submitToCloud()">同步雲端並生成日報 💌</button>
-        <button onclick="closeModal()" style="width:100%; border:none; background:none; margin-top:15px; color:#999;">返回修改</button>
+        <button class="btn-main" id="subBtn" onclick="submitToCloud()">同步雲端並生成日報</button>
+        <button onclick="closeModal()" style="width:100%; border:none; background:none; margin-top:15px; color:#999;">取消返回</button>
     </div>
 </div>
 
 <div id="exportOverlay">
-    <div style="max-width:600px; margin:auto;">
-        <h3 style="text-align:center; color:var(--p1); font-weight:900;">📜 醫護級照護回報</h3>
-        <div class="copy-box" id="exportTarget" style="margin:20px 0;"></div>
-        <button class="btn-main" onclick="copyAndClose()">複製文字給家長</button>
+    <div class="export-card">
+        <h3 style="text-align:center; color:var(--p1); font-weight:900; margin-bottom:15px;">📜 照護回報預覽</h3>
+        <div class="copy-box" id="exportTarget"></div>
+        <button class="btn-main" onclick="copyTextOnly()">點擊複製文字內容 📋</button>
+        <button class="btn-outline" onclick="closeExport()">← 返回紀錄列表</button>
     </div>
 </div>
 
@@ -174,16 +135,44 @@ async function switchTab(n, el) {
     if(el){ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');}
     const area = document.getElementById('viewArea');
     area.innerHTML = "<p style='text-align:center; padding:30px;'>同步中...</p>";
+    
     if(n===1) {
-        area.innerHTML = `<div class="card"><h3>🏠 陳小姐 (咪咪)</h3><button class="btn-main" onclick="openModal('陳小姐', 450)">開始詳細回報</button></div>
-                          <div class="card"><h3>🏠 王先生 (小黑)</h3><button class="btn-main" onclick="openModal('王先生', 550)">開始詳細回報</button></div>`;
+        area.innerHTML = `
+            <div class="card"><h3>🏠 陳小姐 (咪咪)</h3><button class="btn-main" onclick="openModal('陳小姐', 450)">開始回報 ($450)</button></div>
+            <div class="card"><h3>🏠 王先生 (小黑)</h3><button class="btn-main" onclick="openModal('王先生', 550)">開始回報 ($550)</button></div>`;
     } else if(n===2) {
         const { data } = await supabaseClient.from('reports').select('*').eq('sitter_name', curSitter).order('created_at', {ascending: false});
-        area.innerHTML = data && data.length ? data.map(r => `<div class="card"><button onclick='exportToOwner(${JSON.stringify(r)})' style="float:right; border:1px solid var(--p1); color:var(--p1); background:none; padding:5px 10px; border-radius:10px; font-size:0.7rem;">導出 📤</button><b>${r.client_name}</b><br><small>${new Date(r.created_at).toLocaleString()}</small></div>`).join('') : "<p style='text-align:center;'>無紀錄</p>";
+        area.innerHTML = data && data.length ? data.map(r => `
+            <div class="card">
+                <button onclick='exportToOwner(${JSON.stringify(r)})' style="float:right; border:1px solid var(--p1); color:var(--p1); background:none; padding:5px 12px; border-radius:12px; font-size:0.75rem; font-weight:bold;">導出日報 📤</button>
+                <b>${r.client_name} 家</b><br><small style="color:#aaa;">${new Date(r.created_at).toLocaleString()}</small>
+            </div>`).join('') : "<p style='text-align:center; padding:30px;'>尚無紀錄</p>";
     } else {
-        const { data } = await supabaseClient.from('reports').select('fee').eq('sitter_name', curSitter);
+        // 薪資明細邏輯
+        const { data } = await supabaseClient.from('reports').select('created_at, client_name, fee').eq('sitter_name', curSitter).order('created_at', {ascending: false});
         const total = data ? data.reduce((s, r) => s + (Number(r.fee)||0), 0) : 0;
-        area.innerHTML = `<div class="card" style="text-align:center;"><h3>薪資統計</h3><h1 style="color:var(--p1);">$${total}</h1></div>`;
+        
+        let detailHtml = data && data.length ? data.map(r => `
+            <tr>
+                <td>${new Date(r.created_at).toLocaleDateString()}<br><small style="color:#999">${new Date(r.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small></td>
+                <td>${r.client_name}</td>
+                <td style="font-weight:bold; text-align:right;">$${r.fee}</td>
+            </tr>
+        `).join('') : "<tr><td colspan='3' style='text-align:center; color:#ccc; padding:20px;'>本期尚無案件紀錄</td></tr>";
+
+        area.innerHTML = `
+            <div class="fee-total-box">
+                <p style="font-size:0.9rem; opacity:0.8;">本期累計薪資</p>
+                <h1 style="font-size:3rem; font-weight:900;">$${total}</h1>
+            </div>
+            <div class="card">
+                <h3 style="color:var(--p1); margin-bottom:10px;">🧧 案件薪資明細</h3>
+                <table class="fee-table">
+                    <thead><tr><th>日期時間</th><th>案件對象</th><th style="text-align:right;">金額</th></tr></thead>
+                    <tbody>${detailHtml}</tbody>
+                </table>
+            </div>
+        `;
     }
 }
 
@@ -192,56 +181,32 @@ function closeModal() { document.getElementById('reportModal').style.display = '
 
 async function submitToCloud() {
     const btn = document.getElementById('subBtn'); btn.innerText = "寫入中..."; btn.disabled = true;
-    
     const bodyChecks = Array.from(document.querySelectorAll('.bodycheck:checked')).map(i => "● " + i.value).join('\n');
-    const sops = Array.from(document.querySelectorAll('.sop:checked')).map(i => i.value).join('、');
-    
     const row = {
         sitter_name: curSitter, client_name: activeClient, fee: currentFee,
-        temp: "26", // 簡化
-        food_status: document.getElementById('f_food').value,
-        poo: document.getElementById('f_poo').value,
-        mood: document.getElementById('f_mood').value,
-        items: document.getElementById('f_items').value,
-        note: `【身體檢查指標】\n${bodyChecks}\n\n【環境SOP】\n${sops}`
+        temp: "26", food_status: document.getElementById('f_food').value,
+        poo: document.getElementById('f_poo').value, mood: document.getElementById('f_mood').value,
+        items: "醫護SOP已完成",
+        note: `【醫護檢查】\n${bodyChecks}`
     };
-
     const { error } = await supabaseClient.from('reports').insert([row]);
     if(error) alert(error.message);
-    else { alert("🎉 雲端數據已更新！"); closeModal(); switchTab(2); }
-    btn.innerText = "同步雲端並生成日報 💌"; btn.disabled = false;
+    else { alert("🎉 已同步雲端並計入薪資！"); closeModal(); switchTab(2); }
+    btn.innerText = "同步雲端並生成日報"; btn.disabled = false;
 }
 
 function exportToOwner(r) {
-    const msg = `🐾 【貓窩裏】醫護級專業照護日報 🐾
-
-家長您好，保母 ${r.sitter_name} 已完成服務。
-今日重點觀察如下，我們特別針對寶貝的身體狀況進行了詳細盤點：
-
-🩺 【醫護級身體檢查清單】
-${r.note.split('\n\n')[0].replace('【身體檢查指標】\n','')}
-
-🍱 【飲食與消化紀錄】
-● 進食：${r.food_status}
-● 排泄：${r.poo}
-
-💕 【精神情緒表現】
-● 狀態：${r.mood}
-
-🏠 【環境與備品】
-● 安全：${r.note.split('\n\n')[1].replace('【環境SOP】\n','')}
-● 備品：${r.items}
-
-服務時間：${new Date(r.created_at).toLocaleString()}
-貓窩裏，用醫療級的細心，守護您的寶貝 ❤️`;
-
+    const msg = `🐾 【貓窩裏】醫護級照護日報 🐾\n\n家長您好，保母 ${r.sitter_name} 已完成服務。\n\n🩺 【醫護級檢查】\n${r.note.replace('【醫護檢查】\n','')}\n\n🍱 【消化紀錄】\n● 進食：${r.food_status}\n● 排泄：${r.poo}\n\n💕 【情緒表現】\n● 狀態：${r.mood}\n\n服務時間：${new Date(r.created_at).toLocaleString()}\n貓窩裏，守護您的寶貝 ❤️`;
     document.getElementById('exportTarget').innerText = msg;
-    document.getElementById('exportOverlay').style.display = 'block';
+    document.getElementById('exportOverlay').style.display = 'flex';
 }
 
-function copyAndClose() {
+function copyTextOnly() {
     navigator.clipboard.writeText(document.getElementById('exportTarget').innerText);
-    alert("專業日報已複製！");
+    alert("複製成功！");
+}
+
+function closeExport() {
     document.getElementById('exportOverlay').style.display = 'none';
 }
 </script>
